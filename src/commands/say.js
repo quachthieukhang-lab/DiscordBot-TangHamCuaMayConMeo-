@@ -66,7 +66,17 @@ module.exports = {
       })
     }
 
-    await interaction.deferReply()
+    try {
+      await interaction.deferReply()
+    } catch (err) {
+      if (err.code === 10062) {
+        logger.warn(
+          `/say: interaction expired before defer (gateway latency / event loop block)`
+        )
+        return
+      }
+      throw err
+    }
 
     let urls
     try {
@@ -77,7 +87,7 @@ module.exports = {
         splitPunct: ',.?!',
       })
     } catch (err) {
-      return interaction.editReply(`❌ Lỗi tạo audio: ${err.message}`)
+      return interaction.editReply(`❌ Lỗi tạo audio: ${err.message}`).catch(() => {})
     }
 
     const connection = joinVoiceChannel({
@@ -95,7 +105,7 @@ module.exports = {
 
       await interaction.editReply(
         `🔊 Đang đọc (${LANGUAGES.find((l) => l.value === lang)?.name || lang}): _${text.slice(0, 100)}${text.length > 100 ? '...' : ''}_`
-      )
+      ).catch(() => {})
 
       for (const { url } of urls) {
         const resource = createAudioResource(url)
