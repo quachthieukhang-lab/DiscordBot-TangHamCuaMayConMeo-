@@ -40,32 +40,9 @@ module.exports = {
         .addChoices(...LANGUAGES)
     ),
   execute: async (interaction) => {
-    const text = interaction.options.getString('text', true)
-    const lang = interaction.options.getString('lang') ?? 'vi'
-    const voiceChannel = interaction.member.voice?.channel
-
-    if (!voiceChannel) {
-      return interaction.reply({
-        content: 'Bạn phải vào voice channel trước!',
-        flags: MessageFlags.Ephemeral,
-      })
-    }
-
-    if (getQueue(interaction.guildId)) {
-      return interaction.reply({
-        content: 'Bot đang phát nhạc, dùng `/stop` trước rồi thử lại.',
-        flags: MessageFlags.Ephemeral,
-      })
-    }
-
-    const perms = voiceChannel.permissionsFor(interaction.client.user)
-    if (!perms?.has(['Connect', 'Speak'])) {
-      return interaction.reply({
-        content: 'Bot không có quyền **Connect** hoặc **Speak**.',
-        flags: MessageFlags.Ephemeral,
-      })
-    }
-
+    // Defer trước MỌI thứ — chiếm token sớm nhất có thể (window 3s → 15min).
+    // Nếu vẫn fail nghĩa là interaction đã hết hạn trước khi tới tay bot
+    // (gateway latency hoặc event loop bị block bởi job trước đó).
     try {
       await interaction.deferReply()
     } catch (err) {
@@ -76,6 +53,29 @@ module.exports = {
         return
       }
       throw err
+    }
+
+    const text = interaction.options.getString('text', true)
+    const lang = interaction.options.getString('lang') ?? 'vi'
+    const voiceChannel = interaction.member.voice?.channel
+
+    if (!voiceChannel) {
+      return interaction
+        .editReply('Bạn phải vào voice channel trước!')
+        .catch(() => {})
+    }
+
+    if (getQueue(interaction.guildId)) {
+      return interaction
+        .editReply('Bot đang phát nhạc, dùng `/stop` trước rồi thử lại.')
+        .catch(() => {})
+    }
+
+    const perms = voiceChannel.permissionsFor(interaction.client.user)
+    if (!perms?.has(['Connect', 'Speak'])) {
+      return interaction
+        .editReply('Bot không có quyền **Connect** hoặc **Speak**.')
+        .catch(() => {})
     }
 
     let urls
