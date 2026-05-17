@@ -1,0 +1,17 @@
+# fly.toml app configuration file for tanghamcuamayconmeo
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+# Discord bot: outbound-only (gateway WebSocket), không accept inbound HTTP.
+# Vì vậy KHÔNG khai báo [http_service] / [[services]] — nếu khai báo,
+# Fly proxy sẽ health-check port và đánh dấu machine unhealthy.
+
+app = 'tanghamcuamayconmeo'
+primary_region = 'iad'
+
+[build]
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
