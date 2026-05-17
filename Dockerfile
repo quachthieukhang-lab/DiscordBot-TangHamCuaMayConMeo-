@@ -42,6 +42,5 @@ FROM base
 # Copy built application
 COPY --from=build /app /app
 
-# Start the server by default, this can be overwritten at runtime
-EXPOSE 3000
+# Start the bot (Discord gateway is outbound-only — no EXPOSE needed)
 CMD [ "npm", "run", "start" ]
