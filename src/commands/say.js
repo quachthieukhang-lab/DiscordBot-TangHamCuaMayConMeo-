@@ -115,7 +115,6 @@ module.exports = {
     } finally {
       try {
         player.stop()
-        connection.destroy()
       } catch {}
     }
   },

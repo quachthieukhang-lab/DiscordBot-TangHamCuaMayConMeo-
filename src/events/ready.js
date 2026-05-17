@@ -17,10 +17,7 @@ module.exports = {
         logger.warn('Không tìm thấy kênh từ CHANNEL_ID')
         return
       }
-      await channel.send(
-        'Đây là tin nhắn test từ bot! 🚀\nNếu bạn thấy dòng này nghĩa là bot đã hoạt động bình thường.'
-      )
-      logger.success('Đã gửi tin nhắn test!')
+      logger.success('Đã kết nối với kênh!')
     } catch (err) {
       logger.error(err)
     }
