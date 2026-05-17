@@ -1,11 +1,7 @@
-# fly.toml app configuration file for tanghamcuamayconmeo
+# fly.toml app configuration file generated for tanghamcuamayconmeo on 2026-05-17T11:10:54Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
-# Discord bot: outbound-only (gateway WSS + voice UDP), không accept inbound traffic.
-# KHÔNG khai báo [http_service] / [[services]] — nếu khai báo, Fly proxy sẽ
-# health-check port và auto-stop machine khi không có HTTP traffic.
-# Giữ bot online 24/7 bằng: fly scale count 1 -a tanghamcuamayconmeo
 
 app = 'tanghamcuamayconmeo'
 primary_region = 'sin'
