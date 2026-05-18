@@ -1,6 +1,7 @@
 const { Events } = require('discord.js')
 const logger = require('../utils/logger')
 const config = require('../config/config')
+const giveawayManager = require('../utils/giveawayManager')
 
 module.exports = {
   name: Events.ClientReady,
@@ -8,6 +9,8 @@ module.exports = {
   execute: async (client) => {
     logger.success(`Bot đã sẵn sàng: ${client.user.tag}`)
     logger.info(`Đang phục vụ ${client.guilds.cache.size} server(s)`)
+
+    giveawayManager.initOnReady(client)
 
     if (!config.channelId) return
 
